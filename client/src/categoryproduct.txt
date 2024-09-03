@@ -1,0 +1,122 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Link, useParams } from 'react-router-dom';
+import { FaArrowLeft, FaShoppingCart } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './CategoryProducts.css';
+
+function CategoryProducts() {
+  const { categoryId } = useParams();
+  const [products, setProducts] = useState([]);
+  const [notification, setNotification] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/addproducts/${categoryId}`);
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchProducts();
+  }, [categoryId]);
+
+  const addToCart = (product) => {
+    try {
+      const existingCart = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const productInCart = existingCart.find(item => item._id === product._id);
+
+      if (productInCart) {
+        setNotification(`Product "${product.name}" already added, Check in My Cart Page.`);
+      } else {
+        const updatedCart = [...existingCart, { ...product, quantity: 1 }];
+        localStorage.setItem('cartItems', JSON.stringify(updatedCart));
+        setNotification(`Product "${product.name}" added to cart!`);
+      }
+
+      setTimeout(() => {
+        setNotification('');
+      }, 3000);
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  };
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <div className="container mt-5">
+      <div className="navigation-container">
+        <Link to="/" className="back-button">
+          <FaArrowLeft />
+        </Link>
+
+        <h2 className="products-title" style={{ fontSize: '1.5rem' }}>Products</h2>
+
+        <Link to="/cart" className="cart-button">
+          <FaShoppingCart />
+        </Link>
+      </div>
+
+      {notification && (
+        <div className="alert alert-success" role="alert" style={{ fontSize: '0.875rem' }}>
+          {notification}
+        </div>
+      )}
+
+      <div className="mb-4">
+        <input 
+          type="text" 
+          className="form-control" 
+          placeholder="Search products..." 
+          value={searchTerm} 
+          onChange={(e) => setSearchTerm(e.target.value)} 
+        />
+      </div>
+
+      <div className="row justify-content-center">
+        {filteredProducts.map(product => (
+          <div key={product._id} className="col-12 col-md-6 col-lg-4 mb-4">
+            <div className={`card shadow-sm w-100 ${product.available ? 'bg-light' : 'bg-secondary text-white'}`} style={{ padding: '0.5rem' }}>
+              <div className="d-flex justify-content-between align-items-center">
+                <div className="flex-grow-1">
+                  <h5 className="card-title" style={{ fontSize: '1.25rem' }}>{product.name}</h5>
+                  <p className="card-text" style={{ fontSize: '1rem' }}>₹{product.price}</p>
+                </div>
+                <div className="text-end d-flex flex-column align-items-center">
+                  <img 
+                    src={product.imageUrl} 
+                    alt={product.name} 
+                    className="product-image" 
+                    style={{ position: 'relative', zIndex: 0 }}
+                  />
+                  {!product.available && (
+                    <div className="unavailable-overlay">
+                      Currently Unavailable
+                    </div>
+                  )}
+                  {product.available && (
+                    <button 
+                      className="btn btn-primary btn-sm mt-2 w-100" 
+                      onClick={() => addToCart(product)}
+                      style={{ fontSize: '0.875rem' }} 
+                    >
+                      Add to Cart
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default CategoryProducts;

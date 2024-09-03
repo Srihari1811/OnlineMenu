@@ -1,0 +1,129 @@
+body {
+  background-color: #121212;
+  color: #ffffff;
+  margin: 0%;
+  padding: 0%;
+}
+
+.navigation-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.back-button, .cart-button {
+  padding: 10px;
+  border-radius: 50%;
+  background-color: #3498db;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 20px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover, .cart-button:hover {
+  background-color: #2980b9;
+}
+
+.search-input {
+  background-color: #333;
+  border: 1px solid #555;
+  color: #fff;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.product-image {
+  width: 230px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease-in-out;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  background-color: #1f1f1f;
+  border: none;
+}
+
+.unavailable-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(87, 60, 60, 0.7);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@700&display=swap');
+
+.products-title {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5rem; /* Adjust size for better impact */
+  font-weight: normal;
+  text-transform: none; /* Keep the original case for this font */
+  letter-spacing: 1px; /* Slight adjustment for readability */
+  text-align: center;
+  margin-bottom: 10px;
+  margin-left: 6px;
+  background-image: linear-gradient(90deg, #00ff0d, #00ffff);
+  -webkit-background-clip: text;
+  color: transparent;
+  text-shadow: 2px 2px 5px rgba(219, 211, 211, 0.5);
+}
+
+
+.alert-info {
+  background-color: #444;
+  border-color: #555;
+  color: #fff;
+}
+
+.fixed-bottom {
+  margin-bottom: 10px; /* Adds space below the alert to prevent hiding content */
+}
+.container {
+  padding-bottom: 100px; /* Adds space at the bottom of the page */
+}
+.alert-success {
+  font-size: 1rem;
+  width: 100%;
+  border-radius: 0;
+  background-color: #28a745;
+  color: white;
+  padding: 15px; /* Adjust padding if needed */
+  box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow to make it more prominent */
+}
+
+
+
+.text-white {
+  color: #fff;
+}
+
+.text-dark {
+  color: #fff;
+}

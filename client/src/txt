@@ -1,0 +1,1 @@
+if i click add category button get a categoryName and categoryImage and store and display into homepage then if i click  add product get productName, productPrice,  productImage and get category from displayed category if i click submit button store into db and display that products into category

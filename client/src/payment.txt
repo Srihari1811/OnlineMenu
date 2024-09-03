@@ -1,0 +1,142 @@
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './PaymentPage.css';
+import { FaHome, FaArrowLeft } from 'react-icons/fa'; // Import icons
+
+function PaymentPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const amount = parseFloat(queryParams.get('amount')) || 0;
+  const formattedAmount = amount.toFixed(2);
+
+  const [name, setName] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [tableNumber, setTableNumber] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [orderId, setOrderId] = useState('');
+  const [orderDate, setOrderDate] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+
+  useEffect(() => {
+    const items = JSON.parse(localStorage.getItem('cartItems')) || [];
+    setCartItems(items);
+
+    // Set current date and time when component mounts
+    setOrderDate(new Date().toLocaleString());
+  }, []);
+
+  const handlePayment = async () => {
+    try {
+      // Request PayPal order creation
+      const response = await fetch('http://localhost:5000/submitOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount: formattedAmount }),
+      });
+
+      const { orderId: newOrderId, approvalUrl } = await response.json();
+
+      setOrderId(newOrderId);
+
+      // Redirect to PayPal for payment
+      if (approvalUrl) {
+        window.location.href = approvalUrl;
+      } else {
+        console.error('Failed to get PayPal approval URL');
+      }
+    } catch (error) {
+      console.error('Payment Error:', error);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitted(true);
+  };
+
+  const handleNameChange = (e) => setName(e.target.value);
+  const handleMobileChange = (e) => setMobile(e.target.value);
+  const handleTableNumberChange = (e) => setTableNumber(e.target.value);
+
+  return (
+    <div className="container mt-5 payment-container">
+      <div className="d-flex justify-content-between mb-4 custom-icons">
+        <FaArrowLeft className="icon" onClick={() => navigate('/cart')} />
+        <h2 className="payment-heading">Payment Page</h2>
+        <FaHome className="icon" onClick={() => navigate('/')} />
+      </div>
+
+      {isSubmitted ? (
+        <div className="order-summary-container text-center">
+          <h5 className="mb-4">Order Summary</h5>
+          <div className="order-summary-details">
+            <p><strong>Order ID:</strong> {orderId}</p>
+            <p><strong>Date:</strong> {orderDate}</p>
+            <p><strong>Name:</strong> {name}</p>
+            <p><strong>Mobile:</strong> {mobile}</p>
+            <p><strong>Table Number:</strong> {tableNumber}</p>
+            <p><strong>Total Price:</strong> ₹{formattedAmount}</p>
+          </div>
+          <h5 className="mt-4">Cart Items</h5>
+          <ul className="list-unstyled">
+            {cartItems.map(item => (
+              <li key={item._id}>{item.name} - ₹{item.price} x {item.quantity || 1}</li>
+            ))}
+          </ul>
+          <button className="btn btn-primary mt-3" onClick={handlePayment}>Pay Now</button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="text-center">
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Name</label>
+            <input
+              type="text"
+              id="name"
+              className="form-control text-center"
+              value={name}
+              onChange={handleNameChange}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="mobile" className="form-label">Mobile Number</label>
+            <input
+              type="text"
+              id="mobile"
+              className="form-control text-center"
+              value={mobile}
+              onChange={handleMobileChange}
+              required
+              pattern="[0-9]{10}"
+              maxLength="10"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="tableNumber" className="form-label">Table Number</label>
+            <input
+              type="text"
+              id="tableNumber"
+              className="form-control text-center"
+              value={tableNumber}
+              onChange={handleTableNumberChange}
+            />
+          </div>
+          <h4 className="text-center custom-total-price">Payable Amount: ₹{formattedAmount}</h4>
+          <button type="submit" className="btn btn-primary">Submit</button>
+        </form>
+      )}
+      {showAlert && (
+        <div className="alert alert-success mt-4" role="alert">
+          Your order will be delivered soon. Thanks for ordering!
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default PaymentPage;

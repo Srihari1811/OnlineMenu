@@ -1,0 +1,126 @@
+.homepage-container {
+  background-color: #161414; /* Dark background color */
+  color: #ffffff; /* White text color for better contrast */
+  min-height: 100vh; /* Ensure the background covers the full height of the viewport */
+}
+
+.navbar {
+  background-color: #2c3e50; /* Dark blue/navy for the navbar */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Light shadow */
+}
+
+.brand-text {
+  font-size: 30px;
+  color: #ffffff; /* White color for Pizza House */
+  font-weight: bold;
+  margin-top: 35px;
+  font-family: 'Pacifico', cursive; /* Special font for a unique design */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Subtle text shadow for depth */
+}
+
+.admin-icon {
+  color: #ff6f61; /* Change this to your desired color */
+  font-size: 24px;
+  margin-top: 40px;
+}
+
+.cart-icon {
+  color: #4CAF50; /* Change this to your desired color */
+  font-size: 24px;
+  margin-top: 40px;
+}
+
+.admin-btn:hover, .cart-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+.menu-title {
+  font-family: 'YourDesiredFontFamily', sans-serif; /* Replace with your desired font family */
+  font-size: 2rem; /* Adjust size as needed */
+  font-weight: bold; /* Adjust weight as needed */
+  color: #ffd900; /* Adjust color as needed */
+  text-align: center; /* Center-align if desired */
+  margin-bottom: 1rem; /* Adjust spacing as needed */
+  margin-top: 30px;
+}
+
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  max-width: 500px;
+  border-radius: 25px;
+  padding: 10px 20px;
+  border: 2px solid #27deeb; /* Matching color with the buttons */
+  background-color: #fffefeea; /* Light gray for search input */
+  color: #0080ff; /* Dark blue text */
+  font-size: 1rem;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 10px rgba(255, 111, 97, 0.5); /* Highlight on focus */
+  outline: none; /* Remove default outline */
+}
+
+
+
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+/* Custom CSS for Zomato-like styling */
+
+/* General styles */
+.custom-card-img {
+  width: 100%;
+  height: 70%;
+  border-radius: 20px;
+  background-color: #f0f0f0; /* Light grayish color */
+  border: 2px solid white; /* White border */
+}
+
+.custom-card-body {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+  border-radius: 8px; /* Rounded corners */
+  color: #00ece0; /* Text color (adjust as needed) */
+
+}
+
+
+
+/* Ensure 2 items per row on mobile devices */
+@media (max-width: 576px) {
+  .col-sm-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* Additional styles for responsiveness */
+.no-results {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+}
+
+.modal-content {
+  border-radius: 8px;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+/* Set all text on the Admin page to black */
+.admin-page, .admin-page * {
+  color: black !important;
+}

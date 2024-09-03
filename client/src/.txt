@@ -1,0 +1,198 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { storage, ref, uploadBytes, getDownloadURL, deleteObject } from './firebase'; // Import deleteObject to remove files
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './AddCategory.css';
+
+function AddCategory({ onCategoryAdded, onNextClick }) {
+  const [categoryName, setCategoryName] = useState('');
+  const [categoryImage, setCategoryImage] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState(''); // 'success' or 'error'
+  const [editMode, setEditMode] = useState(false);
+  const [editCategoryId, setEditCategoryId] = useState(null); // Store the category being edited
+
+  // Function to fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/addcategories'); // Corrected endpoint
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Failed to fetch categories', error);
+      setAlertMessage('Failed to fetch categories');
+      setAlertType('error');
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    if (alertMessage) {
+      const timer = setTimeout(() => {
+        setAlertMessage('');
+        fetchCategories(); // Fetch categories again to update the list
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [alertMessage]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!categoryImage && !editMode) {
+      setAlertMessage('Please upload an image.');
+      setAlertType('error');
+      return;
+    }
+
+    try {
+      let imageUrl = null;
+
+      // If image exists, upload it to Firebase Storage
+      if (categoryImage) {
+        const imageRef = ref(storage, `categories/${categoryImage.name}`);
+        await uploadBytes(imageRef, categoryImage);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
+      // Prepare data for backend
+      const formData = { name: categoryName, imageUrl };
+
+      if (editMode) {
+        // Edit existing category
+        const response = await axios.put(`http://localhost:5000/editCategory/${editCategoryId}`, formData);
+        if (response.status === 200) {
+          setAlertMessage('Category updated successfully');
+          setAlertType('success');
+        } else {
+          setAlertMessage('Failed to update category');
+          setAlertType('error');
+        }
+      } else {
+        // Add new category
+        const response = await axios.post('http://localhost:5000/addCategories', formData);
+        if (response.status === 201) {
+          setAlertMessage('Category added successfully');
+          setAlertType('success');
+        } else {
+          setAlertMessage('Failed to add category');
+          setAlertType('error');
+        }
+      }
+
+      // Clear the form and reset edit mode
+      setCategoryName('');
+      setCategoryImage(null);
+      setEditMode(false);
+      setEditCategoryId(null);
+
+    } catch (error) {
+      console.error('Error:', error);
+      setAlertMessage(error.response?.data?.error || 'Failed to add/edit category');
+      setAlertType('error');
+    }
+  };
+
+  const handleEdit = (category) => {
+    setCategoryName(category.name);
+    setCategoryImage(null); // User can change the image if they want
+    setEditCategoryId(category._id);
+    setEditMode(true);
+  };
+
+  const handleRemove = async (category) => {
+    try {
+      // Delete category from database
+      const response = await axios.delete(`http://localhost:5000/deleteCategory/${category._id}`);
+      if (response.status === 200) {
+        setAlertMessage('Category deleted successfully');
+        setAlertType('success');
+
+        // Remove image from Firebase storage
+        const imageRef = ref(storage, `categories/${category.imageName}`);
+        await deleteObject(imageRef);
+      } else {
+        setAlertMessage('Failed to delete category');
+        setAlertType('error');
+      }
+    } catch (error) {
+      console.error('Error deleting category:', error);
+      setAlertMessage(error.response?.data?.error || 'Failed to delete category');
+      setAlertType('error');
+    }
+  };
+
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-lg-6 col-md-8 col-sm-12">
+          <div className="add-category-form p-4 shadow-lg rounded">
+            <h2 className="text-center mb-4">{editMode ? 'Edit Category' : 'Add New Category'}</h2>
+
+            {/* Alert Message */}
+            {alertMessage && (
+              <div className={`alert ${alertType === 'error' ? 'alert-danger' : 'alert-success'}`}>
+                {alertMessage}
+              </div>
+            )}
+
+            {/* Add/Edit Category Form */}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group mb-3">
+                <label>Category Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={categoryName}
+                  onChange={(e) => setCategoryName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group mb-3">
+                <label>Category Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="form-control"
+                  onChange={(e) => setCategoryImage(e.target.files[0])}
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary btn-block">
+                {editMode ? 'Update Category' : 'Add Category'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Existing Categories */}
+      <h3 className="text-center my-4">Existing Categories</h3>
+      <div className="row">
+        {categories.slice(0, 9).map((category, index) => (
+          <div key={category._id} className="col-md-4 col-sm-6 mb-4">
+            <div className="card text-center">
+              <img
+                src={category.imageUrl}
+                alt={category.name}
+                className="card-img-top"
+                style={{ width: '100%', height: '200px', objectFit: 'cover' }}
+              />
+              <div className="card-body">
+                <h5 className="card-title">{category.name}</h5>
+                <button className="btn btn-warning mr-2" onClick={() => handleEdit(category)}>Edit</button>
+                <button className="btn btn-danger" onClick={() => handleRemove(category)}>Remove</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default AddCategory;

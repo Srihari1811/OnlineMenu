@@ -1,0 +1,101 @@
+.payment-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.custom-icons {
+  font-size: 2rem;
+  color: #007bff;
+  margin: 5px;
+}
+
+.icon {
+  cursor: pointer;
+}
+
+.custom-total-price {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #ffffff; /* Ensure the total price stands out on the background */
+}
+
+.form-control {
+  font-size: 1rem;
+}
+
+.btn-primary {
+  font-size: 1.25rem;
+  background-color: #007bff; /* Custom color for the Pay Now button */
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  border-color: #004085;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.payment-heading {
+  color: #f8e80a; /* Light pink color for heading */
+  font-size: 34px; /* Increase the size */
+  font-weight: bold;
+}
+
+.order-summary-container {
+  background-color: #f8f9fa; /* Light gray background for the order summary */
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for elevation */
+  padding: 20px;
+}
+
+.order-summary-details {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.order-summary-details p {
+  margin: 10px 0;
+  font-size: 1.5rem;
+  color: #343a40; /* Dark gray text color for details */
+}
+
+.order-summary-details p strong {
+  color: #007bff;
+  font-size: 1.2rem; /* Blue color for labels like Name, Mobile, Total Price */
+}
+
+.order-summary-details p:first-child {
+  color: #343a40;
+  font-size: 1.3rem; /* Dark gray for Date and Time */
+}
+
+.order-summary-details p:nth-child(2) {
+  color: #343a40;
+  font-size: 1.5rem; /* Dark gray for Name */
+}
+
+.order-summary-details p:nth-child(3) {
+  color: #343a40; /* Dark gray for Mobile */
+  font-size: 1.5rem;
+}
+
+.order-summary-details p:last-child {
+  font-size: 1.5rem;
+  color: #343a40; /* Dark gray for Total Price */
+}
+
+.list-unstyled li {
+  font-size: 1.5rem;
+  color: #343a40; /* Dark gray for cart items */
+}
+
+.alert {
+  background-color: #00f815; /* Light green background for success alert */
+  border-color: #058d25;
+  color: #000000; /* Dark green text color for success alert */
+  font-size: large;
+  border-radius: 15px;
+}
