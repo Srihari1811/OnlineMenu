@@ -17,7 +17,7 @@ function HomePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/addcategories');
+        const response = await axios.get('https://online-menu-api.vercel.app/addcategories');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -29,7 +29,7 @@ function HomePage() {
 
   const handleAdminLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/validate-admin', {
+      const response = await axios.post('https://online-menu-api.vercel.app/validate-admin', {
         adminId,
         password,
       });
